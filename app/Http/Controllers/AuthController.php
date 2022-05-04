@@ -16,14 +16,16 @@ class AuthController extends Controller
     public function __construct() {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
+
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'name' => 'required|string|between:2,100',
             'password' => 'required|string|min:6',
         ]);
         if ($validator->fails()) {
@@ -42,6 +44,7 @@ class AuthController extends Controller
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
+            'phoneNumber'=>'required|integer',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
         ]);
